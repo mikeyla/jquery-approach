@@ -1,16 +1,22 @@
 /*
- * jQuery Approach 1.01
- * https://github.com/srobbin/jquery-approach/
+ * jQuery Approach-other 1.02
+ * https://github.com/mikeyla/jquery-approach/
  *
- * A plugin that lets you animate based on radial distance from an object.
+ * A plugin that lets you animate based on radial distance from a different object.
  *
  * Copyright (c) 2009 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
+ * Modified by Michael Morgenstern in 2013
  */
  
 (function($) {
   
-  $.fn.approach = function(styles, distance, callback) {
+  $.fn.approach = function(targetobject, styles, distance, callback) {
+
+    targetobject.show();
+    trackobject = this;
+
+    
     var settings = {
           "interval" : 50,    // Used to throttle action on mousemove events
           "distance" : 400},  // Minimum distance in pixels within which we start to animate
@@ -21,7 +27,7 @@
     if(distance) $.extend(settings, {"distance": distance});
     
     // Add the elements to our array
-    this.each(function(i, obj) {
+    targetobject.each(function(i, obj) {
       // Save the style data we'll need for proxanimations
       var proxStyles = [],
           colorStyles = ['backgroundColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor', 'color', 'outlineColor'];
@@ -78,13 +84,12 @@
 
       // Loop through the elements, calculate the values (based on distance), then animate
       $.each(elements, function() {
-          var self = this,
+          var self = trackobject,
               center = getCenter(self),
               distance = parseInt(Math.sqrt(Math.pow(e.pageX-center.x,2) + Math.pow(e.pageY-center.y,2))),
               distanceRatio = (settings.distance - distance) / settings.distance,
               calcStyles = {};
-           	          
-          $.each($(self).data("jquery-approach"), function() {	        
+          $.each($(this).data("jquery-approach"), function() {	        
             var style = this,
                 calcVal,
                 color; 
@@ -106,7 +111,7 @@
             
           });
 
-          $(self).animate(calcStyles, settings.interval - 1);
+          targetobject.animate(calcStyles, settings.interval - 1);
           
       });
         
